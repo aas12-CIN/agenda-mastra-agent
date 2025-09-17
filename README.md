@@ -15,7 +15,6 @@ Um agente construído com **Mastra** em TypeScript, destinado a gerenciar/agenda
 - [Uso](#uso)  
 - [Estrutura do Projeto](#estrutura-do-projeto)  
 - [Contribuição](#contribuição)  
-- [Licença](#licença)  
 
 ---
 
@@ -135,14 +134,3 @@ Contribuições são bem-vindas! Aqui vão algumas diretrizes:
 - Atualize documentação quando adicionar algo novo ou alterar comportamento.  
 - Faça pull requests pequenos e bem documentados.  
 
----
-
-## Licença
-
-Este projeto está sob a **MIT License** (ou outra definida no arquivo `LICENSE`).  
-
----
-
-## Contato
-
-Se tiver dúvidas, sugestões ou quiser colaborar, entre em contato com os mantenedores do projeto.

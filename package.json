@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "mastra dev",
     "build": "mastra build",
-    "start": "mastra start"
+    "start": "mastra start",
+    "scheduler": "tsx src/scheduler.ts",
+    "test-scheduler": "tsx -e \"import('./src/scheduler.js').then(m => m.sendDailySummary())\"",
+    "scheduler:dev": "tsx watch src/scheduler.ts"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +33,7 @@
     "@types/node": "^24.4.0",
     "@types/node-cron": "^3.0.11",
     "mastra": "^0.12.3",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
 }

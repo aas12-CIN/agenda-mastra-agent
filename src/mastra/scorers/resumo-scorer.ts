@@ -77,32 +77,6 @@ export const resumoScorer = createScorer({
     
     console.log(`📊 Scorer: Score calculado = ${score}/10 (${(normalizedScore * 100).toFixed(1)}%)`);
 
-    // Enviar score via Telegram imediatamente após o cálculo (apenas se send=true)
-    const shouldSend = stepInput[0]?.send === true;
-    
-    if (shouldSend) {
-      try {
-        const percentage = Math.round(normalizedScore * 100);
-        const scoreMessage = `📊 Score: ${percentage}%`;
-        
-        // Enviar score via Telegram
-        const { notifyTool } = await import('../tools/notify-tool');
-        const { RuntimeContext } = await import('@mastra/core/di');
-        
-        const runtimeContext = new RuntimeContext();
-        await notifyTool.execute({
-          context: { message: scoreMessage, channel: 'telegram' },
-          runtimeContext,
-        });
-        
-        console.log(`📊 Score enviado via Telegram: ${scoreMessage}`);
-      } catch (scoreError) {
-        console.error(`⚠️ Erro ao enviar score via Telegram:`, scoreError);
-      }
-    } else {
-      console.log(`📊 Score calculado mas não enviado (send=false): ${Math.round(normalizedScore * 100)}%`);
-    }
-
     return normalizedScore;
   })
   .generateReason(({ score, run }) => {
@@ -112,7 +86,7 @@ export const resumoScorer = createScorer({
     const events = stepInput[0]?.events || [];
     const weather = stepInput[0]?.weather || {};
     
-    const reasons = [];
+    const reasons: string[] = [];
     
     // Completude
     if (events.length > 0) {

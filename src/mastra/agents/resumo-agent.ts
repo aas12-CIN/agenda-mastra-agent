@@ -1,5 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core/agent";
+import { ScoreNotifierProcessor } from "../processors/score-notifier-processor";
 
 export const resumoAgent = new Agent({
   name: "Resumo Agent",
@@ -12,4 +13,7 @@ Se não houver compromissos, diga "Nenhum compromisso para hoje." e ainda inclua
 Se algum dado faltar (ex.: clima), seja claro e breve.
 `,
   model: openai("gpt-4o-mini"),
+  outputProcessors: [
+    new ScoreNotifierProcessor(),
+  ],
 });

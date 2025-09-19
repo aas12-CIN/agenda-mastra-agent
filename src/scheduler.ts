@@ -9,7 +9,7 @@ import { mastra } from "./mastra";
  * Execução: Todo dia às 8h da manhã (configurável)
  */
 
-async function sendDailySummary() {
+export async function sendDailySummary() {
   const startTime = new Date().toLocaleString('pt-BR');
   
   try {
@@ -29,6 +29,7 @@ async function sendDailySummary() {
     if (result.status === "success") {
       console.log(`✅ [${startTime}] Resumo enviado com sucesso!`);
       console.log(`📱 Mensagem: ${result.result.message}`);
+      console.log(`📊 Score será enviado automaticamente pelo Mastra Scorer`);
     } else {
       console.error(`❌ [${startTime}] Falha no envio:`, result);
     }
@@ -38,7 +39,7 @@ async function sendDailySummary() {
 }
 
 // Configuração do agendamento
-const CRON_SCHEDULE = process.env.CRON_SCHEDULE || '0 8 * * *'; // Padrão: 08:00 (8h da manhã)
+const CRON_SCHEDULE = process.env.CRON_SCHEDULE || '40 1 * * *'; // Padrão: 01:30 (1h30 da madrugada)
 const TIMEZONE = process.env.USER_TZ || 'America/Sao_Paulo';
 
 console.log(`📅 Configurando agendador...`);

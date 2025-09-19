@@ -6,6 +6,7 @@ import { agendaTool } from "../tools/agenda-tool";
 import { climaTool } from "../tools/clima-tool";
 import { notifyTool } from "../tools/notify-tool";
 import { resumoAgent } from "../agents/resumo-agent";
+import { resumoScorer } from "../scorers/resumo-scorer";
 
 const runtimeContext = new RuntimeContext();
 
@@ -164,10 +165,11 @@ const fetchWeather = createStep({
   },
 });
 
+
 // Recap
 const summarize = createStep({
   id: "summarize",
-  description: "Gera resumo curto com eventos e clima",
+  description: "Gera resumo curto com eventos e clima + calcula score usando Mastra Scorer",
   inputSchema: z.object({
     tz: z.string(),
     city: z.string(),
@@ -196,6 +198,15 @@ const summarize = createStep({
     send: z.boolean(),
     channel: z.enum(["telegram", "console"]),
   }),
+  scorers: {
+    resumoQuality: {
+      scorer: resumoScorer,
+      sampling: {
+        type: "ratio",
+        rate: 1.0, // Score 100% das execuções
+      },
+    },
+  },
   execute: async ({ inputData }) => {
     const { events, weather, city, tz, send, channel } = inputData;
 
@@ -214,14 +225,20 @@ const summarize = createStep({
       },
     ]);
 
-    return { message: text.trim(), send, channel };
+    const baseMessage = text.trim();
+    
+    return { 
+      message: baseMessage, 
+      send, 
+      channel 
+    };
   },
 });
 
 // Delivery (Telegram/Console)
 const deliver = createStep({
   id: "deliver",
-  description: "Entrega mensagem no Telegram ou console",
+  description: "Entrega mensagem no Telegram ou console com score incluído",
   inputSchema: z.object({
     message: z.string(),
     send: z.boolean(),
@@ -233,12 +250,21 @@ const deliver = createStep({
   }),
   execute: async ({ inputData }) => {
     const { message, send, channel } = inputData;
-    if (!send) return { message, deliveredTo: "skipped" };
+    
+    if (!send) {
+      console.log(`📱 Mensagem: ${message}`);
+      return { 
+        message, 
+        deliveredTo: "skipped" 
+      };
+    }
 
     const ret = await notifyTool.execute({
       context: { message, channel },
       runtimeContext,
     });
+
+    console.log(`Enviado via ${ret.channel || channel}: ${message}`);
 
     return {
       message,
@@ -250,7 +276,7 @@ const deliver = createStep({
 // Final Workflow
 export const agendaWorkflow = createWorkflow({
   id: "agenda-workflow",
-  description: "Agenda + clima + resumo + envio para Telegram/console",
+  description: "Agenda + clima + resumo + score (via Mastra Scorer) + envio para Telegram/console",
   inputSchema: z.object({
     tz: z.string().optional(),
     city: z.string().optional(),

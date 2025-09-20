@@ -203,7 +203,7 @@ const summarize = createStep({
       scorer: resumoScorer,
       sampling: {
         type: "ratio",
-        rate: 1.0, // Score 100% das execuções
+        rate: 1.0, // Score 100% of executions
       },
     },
   },

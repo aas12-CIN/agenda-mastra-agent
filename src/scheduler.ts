@@ -3,10 +3,10 @@ import cron from "node-cron";
 import { mastra } from "./mastra";
 
 /**
- * Agendador Diário - Abordagem Simples
+ * Daily Scheduler (simple version)
  * 
- * Envia resumos diários via Telegram com compromissos e clima
- * Execução: Todo dia às 8h da manhã (configurável)
+ * Sends a daily summary via Telegram with appointments and weather forecast.
+ * Run time: every day at 8 AM (configurable).
  */
 
 export async function sendDailySummary() {
@@ -15,13 +15,13 @@ export async function sendDailySummary() {
   try {
     console.log(`🕐 [${startTime}] Iniciando resumo diário...`);
     
-    // Executa o workflow existente
+    // Runs the existing workflow
     const run = await mastra.getWorkflow("agendaWorkflow").createRunAsync();
     const result = await run.start({
       inputData: {
         tz: process.env.USER_TZ || 'America/Sao_Paulo',
         city: process.env.WEATHER_CITY || 'São Paulo',
-        send: true, // Força envio via Telegram
+        send: true, // Manually trigger sending via Telegram
         channel: 'telegram'
       }
     });
@@ -38,15 +38,15 @@ export async function sendDailySummary() {
   }
 }
 
-// Configuração do agendamento
-const CRON_SCHEDULE = process.env.CRON_SCHEDULE || '40 1 * * *'; // Padrão: 01:30 (1h30 da madrugada)
+// Scheduling setup
+const CRON_SCHEDULE = process.env.CRON_SCHEDULE || '00 8 * * *'; 
 const TIMEZONE = process.env.USER_TZ || 'America/Sao_Paulo';
 
 console.log(`📅 Configurando agendador...`);
 console.log(`⏰ Horário: ${CRON_SCHEDULE} (${TIMEZONE})`);
 console.log(`🌍 Timezone: ${TIMEZONE}`);
 
-// Agendar execução diária
+// Set up daily run 
 cron.schedule(CRON_SCHEDULE, sendDailySummary, {
   timezone: TIMEZONE
 });
@@ -54,7 +54,7 @@ cron.schedule(CRON_SCHEDULE, sendDailySummary, {
 console.log(`🚀 Agendador iniciado! Resumos diários configurados.`);
 console.log(`💡 Para testar manualmente, execute: npm run test-scheduler`);
 
-// Manter o processo rodando
+// Keep the process running 
 process.on('SIGINT', () => {
   console.log('\n👋 Encerrando agendador...');
   process.exit(0);

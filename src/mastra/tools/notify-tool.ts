@@ -1,7 +1,7 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 
-// ENV esperados:
+// Expected ENV:
 // TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 export const notifyTool = createTool({
   id: "notify",
@@ -18,7 +18,7 @@ export const notifyTool = createTool({
   execute: async ({ context }) => {
     const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID } = process.env;
 
-    // Decide o canal
+    // Decide the channel
     const channel =
       context.channel ||
       (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? "telegram" : "console");
@@ -32,7 +32,7 @@ export const notifyTool = createTool({
           body: JSON.stringify({
             chat_id: TELEGRAM_CHAT_ID,
             text: context.message,
-            parse_mode: "Markdown", // opcional
+            parse_mode: "Markdown", // optional
           }),
         });
 
@@ -48,11 +48,11 @@ export const notifyTool = createTool({
         };
       } catch (err) {
         console.error("[Notify] Erro no Telegram:", err);
-        // fallback para console
+        // fallback to console
       }
     }
 
-    // Sempre cai aqui se falhar ou se não tiver TELEGRAM configurado
+    // Always falls here if it fails or if TELEGRAM is not configured
     console.log("[Notify] =>", context.message);
     return { ok: true, channel: "console" };
   },

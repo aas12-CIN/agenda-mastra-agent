@@ -13,5 +13,5 @@ export const mastra = new Mastra({
   logger: new PinoLogger({ name: "Mastra", level: "info" }),
 });
 
-// Função main removida para evitar execução automática
-// O workflow agora é executado apenas pelo scheduler.ts
+// Main function removed to prevent automatic execution
+// The workflow is now executed only by scheduler.ts

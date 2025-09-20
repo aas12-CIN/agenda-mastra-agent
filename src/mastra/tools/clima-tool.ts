@@ -1,8 +1,8 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 
-// Open‑Meteo: sem necessidade de chave de API.
-// 1) Geocoding por cidade; 2) Previsão diária (max/min).
+// Open‑Meteo: no need for API key.
+// 1) Geocoding by city; 2) Daily forecast (max/min).
 export const climaTool = createTool({
   id: "get-weather",
   description: "Busca temperatura máxima e mínima de hoje para uma cidade",
@@ -44,7 +44,7 @@ export const climaTool = createTool({
       const { latitude, longitude, timezone } = geo.results[0];
       tz = tz || timezone || "UTC";
 
-      // 2) Previsão diária
+      // 2) Daily forecast
       const wxRes = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min&forecast_days=1&timezone=${encodeURIComponent(
           tz
